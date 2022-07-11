@@ -30,11 +30,16 @@ body {
     width: 150px;
 }
 
-.modal {
+
+#modal {
+    display: none;
+    width: 400px;
+    height: 200px;
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    background-color: #999;
 }
 #page-numbers {
     position: fixed;
@@ -47,8 +52,7 @@ body {
     width: 80px;
     height: 40px;
     border-radius: 15px;
+    border: none;
     padding: 5px;
     margin: 0px 5px;
-    background-color: rgba(29, 58, 146, 0.7);
-    color: white;
 }

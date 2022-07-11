@@ -5,6 +5,17 @@ const movieContainer = document.getElementById("container");
 const searchInput = document.getElementById("search-bar");
 const nextPageBtn = document.getElementById("next-page");
 const prevPageBtn = document.getElementById("prev-page");
+const movieModal = document.getElementById("modal");
+let pageNum = 1;
+let queryString;
+let totalPages = 0;
+
+const toggleNextButton = () => {
+  nextPageBtn.disabled = !nextPageBtn.disabled;
+};
+const togglePrevButton = () => {
+  prevPageBtn.disabled = !prevPageBtn.disabled;
+};
 
 const fetchMovie = async (movieId) => {
   // Returns a movie with id of movieId
@@ -27,9 +38,13 @@ const searchMovies = async (queryString, pageNum) => {
 const renderPage = async (queryString, pageNum) => {
   // Gets list of movies from searchMovies and renders that result
   const res = await searchMovies(queryString, pageNum);
+  totalPages = res.total_pages;
   renderMovies(res.results);
 };
 
+const openMovieModal = () => {
+  movieModal.style.display = "block";
+};
 const renderMovie = (movie) => {
   // creates movie card and appends elements to the DOM
   const movieCard = document.createElement("div");
@@ -50,7 +65,7 @@ const renderMovie = (movie) => {
     img.src = placeholderImg;
   }
   movieCard.append(img, title);
-
+  movieCard.addEventListener("click", openMovieModal);
   movieContainer.append(movieCard);
 };
 
@@ -62,14 +77,20 @@ const renderMovies = (movies) => {
       renderMovie(movie);
     });
   } else {
-    movieContainer.innerHTML = "No movies by that name";
+    movieContainer.innerHTML = "<h4>No movies by that name</h4>";
   }
 };
 
 const searchHandler = async (e) => {
   // Takes input from user and renders first page
   if (e.target.value) {
-    await renderPage(e.target.value, 1);
+    queryString = e.target.value;
+    pageNum = 1;
+
+    await renderPage(queryString, 1);
+    if (totalPages > 1) {
+      nextPageBtn.disabled = false;
+    }
 
     //   renderMovies(res.results);
   } else {
@@ -77,4 +98,32 @@ const searchHandler = async (e) => {
   }
 };
 
+const nextPageHandler = async () => {
+  // define how the next page button works
+
+  await renderPage(queryString, ++pageNum);
+  if (pageNum === totalPages) {
+    // When you are on the last page, disable next button
+    toggleNextButton();
+  } else if (pageNum === 2) {
+    // When you are on any page greater than the first page, enable prev button
+    togglePrevButton();
+  }
+  console.log(pageNum);
+};
+
+const prevPageHandler = async () => {
+  await renderPage(queryString, --pageNum);
+
+  // define how the prev page buttpm works
+  if (pageNum === totalPages - 1) {
+    toggleNextButton();
+  } else if (pageNum === 1) {
+    togglePrevButton();
+  }
+  console.log(pageNum);
+};
+
+nextPageBtn.addEventListener("click", nextPageHandler);
+prevPageBtn.addEventListener("click", prevPageHandler);
 searchInput.addEventListener("input", searchHandler);
