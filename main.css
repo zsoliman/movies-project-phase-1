@@ -1,3 +1,10 @@
+body {
+    font-family: 'Lato', sans-serif;
+}
+#header,#query-form {
+    text-align: center;
+}
+
 #container {
     display: flex;
     justify-content: space-around;
@@ -7,15 +14,20 @@
 }
 .movie-card {
     width: 25%;
-    height: 150px;
+    max-width: 300px;
+    height: 300px;
+    margin: 20px;
+    text-align: center;
+    cursor: pointer;
+}
+.movie-card:hover {
+    transition: transform 0.5s;
+    transform: scale(1.1)
 }
 .movie-card > img {
-    width: 75px;
+    width: 150px;
 }
-.hidden { 
-    display:none;
-    
-}
+
 .modal {
     position: fixed;
     top: 50%;
