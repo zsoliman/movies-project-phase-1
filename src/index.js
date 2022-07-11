@@ -3,32 +3,35 @@ const BASE_URL = "https://api.themoviedb.org/3";
 const baseImageUrl = "https://image.tmdb.org/t/p/w500";
 const movieContainer = document.getElementById("container");
 const searchInput = document.getElementById("search-bar");
+const nextPageBtn = document.getElementById("next-page");
+const prevPageBtn = document.getElementById("prev-page");
+
 const fetchMovie = async (movieId) => {
+  // Returns a movie with id of movieId
   const req = await fetch(`${BASE_URL}/movie/${movieId}?api_key=${API_KEY}`);
   const res = await req.json();
   return res;
 };
-const searchMovie = async (queryString, pageNum) => {
+
+const searchMovies = async (queryString, pageNum) => {
+  // searches movies using queryString and gets page number pageNum
   const req = await fetch(
     `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURI(
       queryString
     )}&page=${pageNum}`
   );
   const res = await req.json();
-  console.log(res);
   return res;
 };
 
-const searchAllMoviePages = async (queryString) => {
-  let res = await searchMovie(queryString, 1);
+const renderPage = async (queryString, pageNum) => {
+  // Gets list of movies from searchMovies and renders that result
+  const res = await searchMovies(queryString, pageNum);
   renderMovies(res.results);
-  for (let pageNum = 1; pageNum <= res.total_pages; pageNum++) {
-    res = await searchMovie(queryString, pageNum);
-    renderMovies(res.results);
-  }
 };
 
 const renderMovie = (movie) => {
+  // creates movie card and appends elements to the DOM
   const movieCard = document.createElement("div");
   movieCard.className = "movie-card";
   const title = document.createElement("h3");
@@ -52,27 +55,25 @@ const renderMovie = (movie) => {
 };
 
 const renderMovies = (movies) => {
-  console.log(movies.length);
+  // re-renders movies array and sends an error msg if no movies are listed by search
   if (movies.length) {
     movieContainer.innerHTML = "";
     movies.forEach((movie) => {
       renderMovie(movie);
     });
   } else {
-    alert("No movies by that name");
+    movieContainer.innerHTML = "No movies by that name";
   }
 };
-let prevTimeout;
-const searchHandler = async (e) => {
-  if (e.target.value) {
-    if (prevTimeout) {
-      clearTimeout(prevTimeout);
-    }
 
-    prevTimeout = setTimeout(async () => {
-      await searchAllMoviePages(e.target.value);
-      //   renderMovies(res.results);
-    }, 2000);
+const searchHandler = async (e) => {
+  // Takes input from user and renders first page
+  if (e.target.value) {
+    await renderPage(e.target.value, 1);
+
+    //   renderMovies(res.results);
+  } else {
+    movieContainer.innerHTML = "";
   }
 };
 
