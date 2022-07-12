@@ -42,9 +42,6 @@ const renderPage = async (queryString, pageNum) => {
   renderMovies(res.results);
 };
 
-const openMovieModal = () => {
-  movieModal.style.display = "block";
-};
 const renderMovie = (movie) => {
   // creates movie card and appends elements to the DOM
   const movieCard = document.createElement("div");
@@ -65,6 +62,15 @@ const renderMovie = (movie) => {
     img.src = placeholderImg;
   }
   movieCard.append(img, title);
+
+  const openMovieModal = () => {
+    movieModal.style.display = "block";
+    const modalImg = document.getElementById("backdrop-image");
+    modalImg.src = `${baseImageUrl}${movie.backdrop_path}`;
+    const overview = document.getElementById("overview");
+    overview.textContent = movie.overview;
+  };
+
   movieCard.addEventListener("click", openMovieModal);
   movieContainer.append(movieCard);
 };
