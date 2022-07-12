@@ -63,12 +63,24 @@ const renderMovie = (movie) => {
   }
   movieCard.append(img, title);
 
+  const closeMovieModal = () => {
+    console.log(movieModal.style.display);
+    movieModal.style.display = "none";
+  };
   const openMovieModal = () => {
     movieModal.style.display = "block";
     const modalImg = document.getElementById("backdrop-image");
     modalImg.src = `${baseImageUrl}${movie.backdrop_path}`;
     const overview = document.getElementById("overview");
     overview.textContent = movie.overview;
+    document.body.addEventListener("click", (e) => {
+      console.log(e.target);
+
+      if (!movieModal.contains(e.target)) {
+        console.log("hello");
+        closeMovieModal();
+      }
+    });
   };
 
   movieCard.addEventListener("click", openMovieModal);
@@ -96,6 +108,8 @@ const searchHandler = async (e) => {
     await renderPage(queryString, 1);
     if (totalPages > 1) {
       nextPageBtn.disabled = false;
+    } else {
+      nextPageBtn.disabled = true;
     }
 
     //   renderMovies(res.results);
@@ -115,7 +129,6 @@ const nextPageHandler = async () => {
     // When you are on any page greater than the first page, enable prev button
     togglePrevButton();
   }
-  console.log(pageNum);
 };
 
 const prevPageHandler = async () => {
@@ -127,7 +140,6 @@ const prevPageHandler = async () => {
   } else if (pageNum === 1) {
     togglePrevButton();
   }
-  console.log(pageNum);
 };
 
 nextPageBtn.addEventListener("click", nextPageHandler);

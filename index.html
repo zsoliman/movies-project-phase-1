@@ -11,27 +11,29 @@
     <link rel="stylesheet" href="./main.css">
 </head>
 <body>
-    <div id="header">
+    <header id="header">
         <h1>T&Z Movies</h1>
-    </div>
-    <div id="query-form">
-        <input type="text" id="search-bar" name="search" placeholder="Search by movie name">
-        <select>
-
-        </select>
-    </div>
-    
-    <div id="container">
-    </div>
+        <div id="query-form">
+            <input type="text" id="search-bar" name="search" placeholder="Search by movie name">
+            <select>
+                <option value=""></option>
+                <option value="One">One</option>
+            </select>
+        </div>
+    </header>
+    <main>
+        <div id="container">
+        </div>
+        <div id="page-numbers">
+            <button id="prev-page" class="btn" disabled>Prev</button>
+            <button id="next-page" class="btn" disabled>Next</button>
+        </div>
+    </main>
     <div id="modal" >
         <img id="backdrop-image" />
         <p id="overview"></p>
     </div>
 
-    <div id="page-numbers">
-        <button id="prev-page" class="btn" disabled>Prev</button>
-        <button id="next-page" class="btn" disabled>Next</button>
-    </div>
     <script src="./src/index.js"></script>
 </body>
 </html>
