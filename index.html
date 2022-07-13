@@ -11,28 +11,48 @@
     <link rel="stylesheet" href="./main.css">
 </head>
 <body>
-    <header id="header">
-        <h1>T&Z Movies</h1>
-        <div id="query-form">
-            <input type="text" id="search-bar" name="search" placeholder="Search by movie name">
-            <select>
-                <option value=""></option>
-                <option value="One">One</option>
-            </select>
-        </div>
-    </header>
-    <main>
-        <div id="container">
-        </div>
-        <div id="page-numbers">
-            <button id="prev-page" class="btn" disabled>Prev</button>
-            <button id="next-page" class="btn" disabled>Next</button>
-        </div>
-    </main>
-    <div id="modal" >
-        <img id="backdrop-image" />
-        <p id="overview"></p>
+    
+    <div id="backdrop">
+        <header id="header">
+            <h1>T&Z Movies</h1>
+            <div id="query-form">
+                <input type="text" id="search-bar" name="search" placeholder="Search by movie name">
+                <select id="genre-dropdown">
+                    <option value=""></option>
+               </select>
+            </div>
+            <p>Page Number: <span id="page-num">0</span>/<span id="total-pages">0</span></p>
+        </header>
+        <main>
+            <div id="container">
+            </div>
+            <div id="page-numbers">
+                <button id="prev-page" class="btn" disabled>Prev</button>
+                <button id="next-page" class="btn" disabled>Next</button>
+            </div>
+        </main>
+
     </div>
+    <div id="modal" >
+        <div id="modal-content">
+            <img id="backdrop-image" />
+            <h1 id="title"></h1>
+            <p id="overview"></p>
+            <button class="btn" id="add-to-list">Add to List</button>
+        </div>
+    </div>
+    <button id="toggle-sidebar">
+        <span >&#171;</span>
+
+    </button>
+
+    <div class="sidebar">
+        <div id="my-list">
+            <!-- Render user's list -->
+        </div>
+
+    </div>
+    
 
     <script src="./src/index.js"></script>
 </body>
