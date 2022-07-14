@@ -17,8 +17,12 @@
             <h1>T&Z Movies</h1>
             <div id="query-form">
                 <input type="text" id="search-bar" name="search" placeholder="Search by movie name">
-                <select id="genre-dropdown">
+                <select id="category-dropdown">
                     <option value=""></option>
+                    <option value="now_playing">Now Playing</option>
+                    <option value="popular">Popular</option>
+                    <option value="top_rated">Top Rated</option>
+                    <option value="upcoming">Upcoming</option>
                </select>
             </div>
             <p>Page Number: <span id="page-num">0</span>/<span id="total-pages">0</span></p>
@@ -36,6 +40,7 @@
     <div id="modal" >
         <div id="modal-content">
             <img id="backdrop-image" />
+            <span id="close-modal" >X</span>
             <h1 id="title"></h1>
             <p id="overview"></p>
             <button class="btn" id="add-to-list">Add to List</button>
@@ -52,7 +57,9 @@
         </div>
 
     </div>
-    
+    <div id="message">
+        <h4 id="message-content"></h4>
+    </div>
 
     <script src="./src/index.js"></script>
 </body>

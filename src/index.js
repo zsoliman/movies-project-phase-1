@@ -11,14 +11,16 @@ const sidebar = document.querySelector(".sidebar");
 const toggleSidebarBtn = document.querySelector("#toggle-sidebar");
 const movieList = document.querySelector("#my-list");
 const addToListBtn = document.querySelector("#add-to-list");
-const genreDropdown = document.querySelector("#genre-dropdown");
+const categoryDropdown = document.querySelector("#category-dropdown");
 const pageNum = document.querySelector("#page-num");
 const totalPages = document.querySelector("#total-pages");
+const message = document.querySelector("#message");
 let global = {
   pageNum: 1,
   queryString: "",
   totalPages: 0,
   curMovie: {},
+  category: "",
 };
 
 // PAGE BUTTON FUNCTIONALITY
@@ -37,6 +39,13 @@ const getMovie = async (movieId) => {
   const res = await req.json();
   return res;
 };
+const getMoviesByCategory = async (category, pageNum) => {
+  const req = await fetch(
+    `${BASE_URL}/movie/${category}?api_key=${API_KEY}&page=${pageNum}`
+  );
+  const res = await req.json();
+  return res;
+};
 
 const searchMovies = async (queryString, pageNum) => {
   // searches movies using queryString and gets page number pageNum
@@ -44,15 +53,6 @@ const searchMovies = async (queryString, pageNum) => {
     `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURI(
       queryString
     )}&page=${pageNum}`
-  );
-  const res = await req.json();
-  return res;
-};
-
-const getGenres = async () => {
-  // Return list of genres
-  const req = await fetch(
-    `https://api.themoviedb.org/3/genre/movie/list?api_key=${API_KEY}`
   );
   const res = await req.json();
   return res;
@@ -86,7 +86,6 @@ const renderMovie = (movie) => {
 
   const openMovieModal = (e) => {
     global.curMovie = movie;
-    console.log(global.curMovie);
     movieModal.style.display = "block";
     const modalImg = document.getElementById("backdrop-image");
     modalImg.src = `${baseImageUrl}${global.curMovie.backdrop_path}`;
@@ -94,9 +93,11 @@ const renderMovie = (movie) => {
     movieTitle.textContent = global.curMovie.title;
     const overview = document.getElementById("overview");
     overview.textContent = global.curMovie.overview;
+
     backdrop.classList.add("blur");
   };
   movieCard.addEventListener("click", openMovieModal);
+
   movieContainer.append(movieCard);
 };
 
@@ -110,33 +111,28 @@ const renderMovies = (movies) => {
   }
 };
 
-const renderPage = async (queryString, pageNum) => {
+const renderPageByQueryString = async (queryString, pageNum) => {
   // Gets list of movies from searchMovies and renders that result
   const res = await searchMovies(queryString, pageNum);
   global.totalPages = res.total_pages;
   renderMovies(res.results);
 };
-
-const renderGenreDropdown = async () => {
-  // Get list of genres and render them to dropdown
-  const res = await getGenres();
-  res.genres.forEach((genre) => {
-    const option = document.createElement("option");
-    option.value = genre.name.toLowerCase();
-    option.text = genre.name;
-    console.log(genre.name);
-    genreDropdown.append(option);
-  });
+const renderPageByCategory = async (category, pageNum) => {
+  // Gets list of movies from searchMovies and renders that result
+  const res = await getMoviesByCategory(category, pageNum);
+  global.totalPages = res.total_pages;
+  renderMovies(res.results);
 };
 
 const searchHandler = async (e) => {
   // Takes input from user and renders first page by calling renderPage. Also handles next and prev page buttons
   if (e.target.value) {
+    categoryDropdown.selectedIndex = 0;
     global.queryString = e.target.value;
     global.pageNum = 1;
     pageNum.textContent = global.pageNum;
 
-    await renderPage(global.queryString, 1);
+    await renderPageByQueryString(global.queryString, 1);
     totalPages.textContent = global.totalPages;
     disableButton(prevPageBtn);
     if (global.totalPages > 1) {
@@ -154,30 +150,38 @@ const searchHandler = async (e) => {
   }
 };
 
-const nextPageHandler = async () => {
-  // define how the next page button works
-
-  await renderPage(global.queryString, ++global.pageNum);
-  if (global.pageNum === global.totalPages) {
-    // When you are on the last page, disable next button
-    disableButton(nextPageBtn);
-  } else if (global.pageNum === 2) {
-    // When you are on any page greater than the first page, enable prev button
+const pageHandler = () => {
+  // Handle the disabling/enabling of prev and next page buttons
+  if (global.pageNum === 1) {
+    disableButton(prevPageBtn);
+    if (global.totalPages > 1) {
+      enableButton(nextPageBtn);
+    }
+  } else if (global.pageNum < global.totalPages) {
     enableButton(prevPageBtn);
+    enableButton(nextPageBtn);
+  } else {
+    disableButton(nextPageBtn);
   }
   pageNum.textContent = global.pageNum;
 };
+const nextPageHandler = async () => {
+  // define how the next page button works
+  if (global.queryString) {
+    await renderPageByQueryString(global.queryString, ++global.pageNum);
+  } else {
+    await renderPageByCategory(global.category, ++global.pageNum);
+  }
+  pageHandler();
+};
 
 const prevPageHandler = async () => {
-  await renderPage(global.queryString, --global.pageNum);
-
-  // define how the prev page buttpm works
-  if (global.pageNum === global.totalPages - 1) {
-    disableButton(nextPageBtn);
-  } else if (global.pageNum === 1) {
-    disableButton(prevPageBtn);
+  if (global.queryString) {
+    await renderPageByQueryString(global.queryString, --global.pageNum);
+  } else {
+    await renderPageByCategory(global.category, --global.pageNum);
   }
-  pageNum.textContent = global.pageNum;
+  pageHandler();
 };
 
 const toggleSidebar = () => {
@@ -202,8 +206,7 @@ const postMovieToList = async (movie) => {
     },
     body: JSON.stringify(movie),
   });
-  const res = await req.json();
-  return res;
+  return req;
 };
 const getMovieListFromServer = async () => {
   const req = await fetch("http://localhost:3000/list");
@@ -247,18 +250,67 @@ const renderMoviesToList = async () => {
 };
 
 const addCurMovieToList = async () => {
-  console.log(global.curMovie);
   const res = await postMovieToList(global.curMovie);
-  renderMovieToList(res);
+
+  const messageContent = document.querySelector("#message-content");
+  if (res.ok) {
+    const newMovie = await res.json();
+    renderMovieToList(newMovie);
+    message.style.display = "block";
+    message.classList.add("success");
+    messageContent.textContent = `Added "${global.curMovie.title}" to list!`;
+  } else {
+    message.style.display = "block";
+    message.classList.add("error");
+    messageContent.textContent = `${res.status} Error - ${res.statusText}`;
+    if (res.status === 500) {
+      messageContent.textContent = "Movie already in list";
+    }
+  }
+  setTimeout(() => {
+    message.classList.remove("error", "success");
+    message.style.display = "none";
+  }, 3000);
 };
 
-const loadPage = () => {
+const filterByCategory = async (e) => {
+  const category = e.target.options[e.target.selectedIndex].value;
+  if (category) {
+    const res = await getMoviesByCategory(category, 1);
+
+    global.category = category;
+    global.pageNum = 1;
+    global.totalPages = res.total_pages;
+    totalPages.textContent = global.totalPages;
+    global.queryString = "";
+    searchInput.value = "";
+    movieContainer.innerHTML = "";
+    // nextPageBtn.removeEventListener("click", nextPageHandler);
+    // prevPageBtn.removeEventListener("click", prevPageHandler);
+    pageHandler();
+    // nextPageBtn.addEventListener("click", nextPageHandler);
+    // prevPageBtn.addEventListener("click", prevPageHandler);
+
+    renderMovies(res.results);
+  } else {
+    pageNum.textContent = "0";
+    totalPages.textContent = "0";
+    nextPageBtn.disabled = true;
+    movieContainer.innerHTML = "";
+  }
+};
+
+const loadPage = async () => {
+  categoryDropdown.addEventListener("change", filterByCategory);
   nextPageBtn.addEventListener("click", nextPageHandler);
   prevPageBtn.addEventListener("click", prevPageHandler);
   searchInput.addEventListener("input", searchHandler);
   toggleSidebarBtn.addEventListener("click", toggleSidebar);
   addToListBtn.addEventListener("click", addCurMovieToList);
   renderMoviesToList();
-  renderGenreDropdown();
+  document.querySelector("#close-modal").addEventListener("click", () => {
+    backdrop.classList.remove("blur");
+    movieModal.style.display = "none";
+  });
 };
 loadPage();
