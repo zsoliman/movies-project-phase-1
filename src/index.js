@@ -86,7 +86,7 @@ const renderMovie = (movie) => {
 
   const openMovieModal = (e) => {
     global.curMovie = movie;
-    movieModal.style.display = "block";
+    movieModal.style.top = "50%";
     const modalImg = document.getElementById("backdrop-image");
     modalImg.src = `${baseImageUrl}${global.curMovie.backdrop_path}`;
     const movieTitle = document.querySelector("#title");
@@ -185,14 +185,16 @@ const prevPageHandler = async () => {
 };
 
 const toggleSidebar = () => {
-  if (sidebar.style.display === "block") {
-    sidebar.style.display = "none";
-    toggleSidebarBtn.innerHTML = "<span>&#171</span>";
-    toggleSidebarBtn.style.right = "45px";
-  } else {
-    sidebar.style.display = "block";
-    toggleSidebarBtn.innerHTML = "<span>&#187;</span>";
+  if (sidebar.classList.contains('sidebar-hidden')) {
+    sidebar.classList.remove('sidebar-hidden')
+    sidebar.classList.add('sidebar-visible');
+    toggleSidebarBtn.innerHTML = "<span>&#187</span>";
     toggleSidebarBtn.style.right = "250px";
+  } else {
+    sidebar.classList.add('sidebar-hidden')
+    sidebar.classList.remove('sidebar-visible');
+    toggleSidebarBtn.innerHTML = "<span>&#171;</span>";
+    toggleSidebarBtn.style.right = "45px";
   }
 };
 
@@ -310,7 +312,7 @@ const loadPage = async () => {
   renderMoviesToList();
   document.querySelector("#close-modal").addEventListener("click", () => {
     backdrop.classList.remove("blur");
-    movieModal.style.display = "none";
+    movieModal.style.top = "-100%";
   });
 };
 loadPage();

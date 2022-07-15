@@ -1,17 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>T&Z Movies</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@1,300&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./main.css">
 </head>
+
 <body>
-    
+
     <div id="backdrop">
         <header id="header">
             <h1>T&Z Movies</h1>
@@ -23,7 +25,7 @@
                     <option value="popular">Popular</option>
                     <option value="top_rated">Top Rated</option>
                     <option value="upcoming">Upcoming</option>
-               </select>
+                </select>
             </div>
             <p>Page Number: <span id="page-num">0</span>/<span id="total-pages">0</span></p>
         </header>
@@ -37,21 +39,21 @@
         </main>
 
     </div>
-    <div id="modal" >
+    <div id="modal">
         <div id="modal-content">
             <img id="backdrop-image" />
-            <span id="close-modal" >X</span>
+            <span id="close-modal">X</span>
             <h1 id="title"></h1>
             <p id="overview"></p>
             <button class="btn" id="add-to-list">Add to List</button>
         </div>
     </div>
     <button id="toggle-sidebar">
-        <span >&#171;</span>
+        <span>&#171;</span>
 
     </button>
 
-    <div class="sidebar">
+    <div class="sidebar sidebar-hidden">
         <div id="my-list">
             <!-- Render user's list -->
         </div>
@@ -63,4 +65,5 @@
 
     <script src="./src/index.js"></script>
 </body>
+
 </html>

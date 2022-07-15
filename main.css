@@ -3,7 +3,9 @@ body {
     background-color: rgb(25, 24, 24);
     color: white;
 }
-#header,#query-form {
+
+#header,
+#query-form {
     text-align: center;
 }
 
@@ -14,6 +16,7 @@ body {
     flex-wrap: wrap;
     flex-grow: 1;
 }
+
 .movie-card {
     width: 25%;
     max-width: 300px;
@@ -21,12 +24,15 @@ body {
     margin: 20px;
     text-align: center;
     cursor: pointer;
-}
-.movie-card:hover {
     transition: transform 0.5s;
-    transform: scale(1.1)
 }
-.movie-card > img {
+
+.movie-card:hover {
+    transform: scale(1.1);
+
+}
+
+.movie-card>img {
     width: 150px;
 }
 
@@ -36,63 +42,104 @@ body {
     left: 50%;
     bottom: 10px;
     transform: translate(-50%, -50%);
-    
+
 }
+
+/* .sidebar:before {
+    -webkit-transition: .4s;
+    transition: .4s;
+} */
+
 .sidebar {
-    display: none;
+    display: block;
     height: 100%;
-    width: 15%;
     position: fixed;
     z-index: 1;
-    top:0;
+    top: 0;
     right: 0;
     background-color: #111;
     overflow-x: hidden;
     padding: 15px;
 }
+
+.sidebar-visible {
+    width: 15%;
+    transition: delay;
+    -webkit-transition: .5s;
+    transition: .5s;
+}
+
+.sidebar-hidden {
+    width: 0%;
+    transition: delay;
+    -webkit-transition: .5s;
+    transition: .5s;
+}
+
+
 #toggle-sidebar {
     position: fixed;
-    top: 10px;
+    top: 15px;
     right: 45px;
     height: 20px;
     cursor: pointer;
-
+    border-radius: 10px;
+    -webkit-transition: .4s;
+    transition: .4s;
 }
+
+#toggle-sidebar:hover {
+    transform: scale(1.1);
+}
+
 #my-list {
     margin-left: 15px;
 }
-.list-movie-card{
+
+.list-movie-card {
     text-align: center;
     margin: 24px;
 }
-.list-movie-card > img {
+
+.list-movie-card>img {
     width: 100px;
 }
-.list-movie-card > button {
+
+.list-movie-card>button {
     padding: .6em;
     border-radius: 30px;
     border: 0;
     background-color: rgb(123, 27, 27);
     color: white;
+    cursor: pointer;
+    transition: transform 0.5s;
+}
+
+.list-movie-card>button:hover {
+    transform: scale(1.1);
+
 }
 
 #modal {
-    display: none;
     width: 900px;
     height: 500px;
     position: fixed;
-    top: 50%;
+    top: -100%;
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: #999;
     text-align: center;
+    -webkit-transition: .75s;
+    transition: .9s;
 }
+
 #modal img {
     width: 100%;
-        height: 100%;
-        object-fit: cover;
-        opacity: .8;
+    height: 100%;
+    object-fit: cover;
+    opacity: .8;
 }
+
 #modal h1 {
 
     position: absolute;
@@ -102,6 +149,7 @@ body {
     font-size: 3.5em;
 
 }
+
 #modal p {
     position: absolute;
     bottom: 8px;
@@ -109,18 +157,26 @@ body {
     font-size: 1.5em;
     font-weight: 900;
 }
+
 #modal button {
     position: absolute;
     top: 15px;
     left: 15px;
-    
+
 }
+
 #close-modal {
     cursor: pointer;
     position: absolute;
-    top:30px;
-    right:30px;
+    top: 30px;
+    right: 30px;
+    transition: transform 0.5s;
 }
+
+#close-modal:hover {
+    transform: scale(1.1);
+}
+
 #message {
     display: none;
     width: 400px;
@@ -133,13 +189,16 @@ body {
     left: 50%;
     transform: translate(-50%);
 }
+
 .success {
     background-color: green;
 }
+
 .error {
     background-color: red;
 
 }
+
 .btn {
     width: 5rem;
     height: 2.5rem;
@@ -148,8 +207,13 @@ body {
     padding: 5px;
     margin: 0px 5px;
     cursor: pointer;
+    transition: transform 0.5s;
 }
+
+.btn:hover {
+    transform: scale(1.1);
+}
+
 .blur {
     filter: blur(10px);
 }
-
